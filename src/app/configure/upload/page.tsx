@@ -3,13 +3,12 @@ import { useState, useTransition } from "react";
 import { cn } from "@/lib/utils";
 import Dropzone, { FileRejection } from "react-dropzone";
 import { Loader2, MousePointerSquareDashed, Image, Divide } from "lucide-react";
-import { Span } from "next/dist/trace";
 import { Progress } from "@/components/ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
-const page = () => {
+const Page = () => {
   const { toast } = useToast();
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -110,4 +109,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
