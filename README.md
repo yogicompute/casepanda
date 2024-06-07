@@ -1,6 +1,8 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CasePanda
 
-## Getting Started
+At our eCommerce store, find durable mobile covers designed to withstand daily wear and tear. Personalize your cover with custom images to make it uniquely yours. Enjoy the perfect blend of protection and style for your mobile device.
+
+## Getting Started (for dev)
 
 First, run the development server:
 
