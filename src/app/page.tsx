@@ -110,7 +110,7 @@ export default function Home() {
             <h2 className=" order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-5xl md:text-6xl text-gray-900">
               Our
               <span className="relative px-2">
-                Customer's{" "}
+                Customer&apos;s{" "}
                 <Icons.underline className="hidden sm:block  pointer-events-none absolute inset-x-0 -bottom-6 text-green-500" />
               </span>
               saying
@@ -128,14 +128,14 @@ export default function Home() {
               </div>
               <div className=" text-lg leading-8">
                 <p>
-                  "I usually keep my phone together with my keys in my pocket
-                  and that led to some pretty heavy scratchmarks on all of my
-                  last phone cases. This one, besides a barely noticable scratch
-                  on the corner,{" "}
+                  &quot;I usually keep my phone together with my keys in my
+                  pocket and that led to some pretty heavy scratchmarks on all
+                  of my last phone cases. This one, besides a barely noticable
+                  scratch on the corner,{" "}
                   <span className="p-0.5 bg-slate-600 text-white">
                     Looks brand new after a half of year.
                   </span>
-                  &nbsp;I dig it."
+                  &nbsp;I dig it.&quot;
                 </p>
               </div>
               <div className="flex gap-4 mt-2">
@@ -162,13 +162,13 @@ export default function Home() {
               </div>
               <div className=" text-lg leading-8">
                 <p>
-                  "The case feels durable and I even got a compliment on the
-                  design. Had the case for two and a half months now and{" "}
+                  &quot;The case feels durable and I even got a compliment on
+                  the design. Had the case for two and a half months now and{" "}
                   <span className="p-0.5 bg-slate-600 text-white">
                     the image is super clear
                   </span>
                   , on the case i had before, the image started fading into
-                  yello-ish color after a couple of weeks. Love it."
+                  yello-ish color after a couple of weeks. Love it.&quot;
                 </p>
               </div>
               <div className="flex gap-4 mt-2">
@@ -241,7 +241,13 @@ export default function Home() {
               print gurantee
             </li>
             <div className="flex justify-center">
-              <Link className={buttonVariants({size:"lg",className:"mx-auto mt-28"})} href="/configure/upload">
+              <Link
+                className={buttonVariants({
+                  size: "lg",
+                  className: "mx-auto mt-28",
+                })}
+                href="/configure/upload"
+              >
                 Update your case now <ArrowRight className="h-4 w-4 ml-1.5" />
               </Link>
             </div>
