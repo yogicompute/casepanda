@@ -5,5 +5,17 @@ import { Icons } from "./Icons";
 import Reviews from "./Reviews";
 import Footer from "./Footer";
 import Steps from "./Steps";
+import Providers from "./Providers";
+import LoginModal from "./LoginModal";
 
-export { Phone, MaxWidthWrapper, Footer, Navbar, Reviews, Steps, Icons };
+export {
+  Phone,
+  MaxWidthWrapper,
+  Footer,
+  Navbar,
+  Reviews,
+  Steps,
+  Providers,
+  LoginModal,
+  Icons,
+};

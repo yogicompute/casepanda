@@ -1,3 +1,4 @@
+"use server"
 import { MaxWidthWrapper } from "./index";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
