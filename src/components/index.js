@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import Steps from "./Steps";
 import Providers from "./Providers";
 import LoginModal from "./LoginModal";
+import PhonePreview from "./PhonePreview";
 
 export {
   Phone,
@@ -17,5 +18,6 @@ export {
   Steps,
   Providers,
   LoginModal,
+  PhonePreview,
   Icons,
 };
