@@ -29,6 +29,8 @@ export async function POST(req: NextRequest) {
 		const body = await req.json();
 		const { userId, shippingAddress } = body;
 
+		console.log("[POST ADDRESS BODY] : ", body);
+
 		if (!userId || !shippingAddress) {
 			return NextResponse.json(
 				{ error: "userId and shippingAddress are required" },

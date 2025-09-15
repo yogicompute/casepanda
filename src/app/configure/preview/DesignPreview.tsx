@@ -188,17 +188,21 @@ const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
 					</div>
 
 					{/* Shipping Address */}
-					<div className="space-y-6 mt-8">
-						<div className="space-y-2">
-							<label className="text-sm font-medium">
-								Shipping Address
-							</label>
-							<AddressDropdown
-								onAddressSelect={handleShippingAddressChange}
-								userId={user?.id || ""}
-							/>
+					{user && (
+						<div className="space-y-6 mt-8">
+							<div className="space-y-2">
+								<label className="text-sm font-medium">
+									Shipping Address
+								</label>
+								<AddressDropdown
+									onAddressSelect={
+										handleShippingAddressChange
+									}
+									userId={user.id}
+								/>
+							</div>
 						</div>
-					</div>
+					)}
 
 					{/* Pricing Summary */}
 					<div className="mt-8">
