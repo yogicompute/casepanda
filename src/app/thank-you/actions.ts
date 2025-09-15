@@ -19,6 +19,8 @@ export const getPaymentStatus = async ({ orderId }: { orderId: string }) => {
       user: true,
     },
   });
+
+  console.log(order)
   if (!order) {
     throw new Error("The order does not exits");
   }
