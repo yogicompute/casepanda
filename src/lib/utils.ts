@@ -37,6 +37,6 @@ export function contructMetadata({
       creator: "@Yogender",
     },
     icons,
-    metadataBase: new URL("https://casepanda.vercel.app"),
+    metadataBase: new URL("https://casepanda.vercel.app/"),
   };
 }
