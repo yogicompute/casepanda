@@ -1,49 +1,76 @@
 import { db } from "@/db";
-import crypto from "crypto";
-
-// Deprecated page config replaced by runtime
-export const runtime = "nodejs"; // keep it node if you need crypto or database access
+import { stripe } from "@/lib/stripe";
+import { headers } from "next/headers";
+import { NextResponse } from "next/server";
+import Stripe from "stripe";
 
 export async function POST(req: Request) {
-    const rawBody = await req.text();
-    const signature = req.headers.get("x-razorpay-signature");
+  try {
+    const body = await req.text();
+    const signature = headers().get("stripe-signature");
 
-    console.log("\n\n\nWEBHOOK CALLED\n\n\n");
-
-    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
-    const expectedSignature = crypto
-        .createHmac("sha256", secret!)
-        .update(rawBody)
-        .digest("hex");
-
-    if (expectedSignature !== signature) {
-        return new Response(JSON.stringify({ error: "Invalid signature" }), {
-            status: 400,
-        });
+    if (!signature) {
+      return new Response("Invalid signature", { status: 400 });
     }
 
-    const event = JSON.parse(rawBody);
+    const event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    );
 
-    if (event.event === "payment.captured") {
-        console.log("Payment captured:", event.payload.payment.entity.id);
+    if (event.type === "checkout.session.completed") {
+      if (!event.data.object.customer_details?.email) {
+        throw new Error("Missing user email");
+      }
+
+      const session = event.data.object as Stripe.Checkout.Session;
+
+      const { userId, orderId } = session.metadata || {
+        userId: null,
+        orderId: null,
+      };
+
+      if (!userId || !orderId) {
+        throw new Error("Invalid req metadata");
+      }
+
+      const billingAddress = session.customer_details?.address;
+      const shippingAddress = session.shipping_details?.address;
+
+      await db.order.update({
+        where: {
+          id: orderId,
+        },
+        data: {
+          isPaid: true,
+          shippingAddress: {
+            create: {
+              name: session.customer_details!.name!,
+              city: shippingAddress!.city!,
+              country: shippingAddress!.country!,
+              postalCode: shippingAddress!.postal_code!,
+              street: shippingAddress!.line1!,
+              state: shippingAddress!.state!,
+            },
+          },
+          billingAddress: {
+            create: {
+              name: session.customer_details!.name!,
+              city: billingAddress!.city!,
+              country: billingAddress!.country!,
+              postalCode: billingAddress!.postal_code!,
+              street: billingAddress!.line1!, 
+              state: billingAddress!.state!,
+            },
+          },
+        },
+      });
     }
 
-    console.log("Full payload:", JSON.stringify(event, null, 2));
-
-    if (event.event === "order.paid") {
-        try {
-            await db.order.update({
-                where: {
-                    id: event.payload.payment.entity.notes.orderId,
-                },
-                data: {
-                    isPaid: true,
-                },
-            });
-        } catch (error) {
-            throw new Error("not updated");
-        }
-    }
-
-    return new Response(JSON.stringify({ status: "ok" }), { status: 200 });
+    return NextResponse.json({result: event, ok: true})
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({message: "Something went wrong"}, {status: 500})
+  }
 }
