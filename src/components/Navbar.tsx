@@ -53,13 +53,13 @@ const Navbar = async () => {
             ) : (
               <>
                 <Link
-                  href="/sign-up"
+                  href="/api/sign-up"
                   className={buttonVariants({ size: "sm", variant: "ghost" })}
                 >
                   Sign up
                 </Link>
                 <Link
-                  href="/sign-in"
+                  href="/api/sign-in"
                   className={buttonVariants({ size: "sm", variant: "ghost" })}
                 >
                   Log in
