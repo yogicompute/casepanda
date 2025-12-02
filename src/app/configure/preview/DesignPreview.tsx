@@ -4,33 +4,36 @@ import Script from "next/script";
 import { useState, useEffect } from "react";
 import { LoginModal, Phone } from "@/components";
 import { Configuration } from "@prisma/client";
-import { COLORS, FINISHES, MODELS } from "@/validators/option-validator";
+import { COLORS, MODELS } from "@/validators/option-validator";
 import { cn, formatPrice } from "@/lib/utils";
 import { ArrowRight, Check } from "lucide-react";
 import { BASE_PRICE, PRODUCT_PRICES } from "@/config/Products";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { useUser } from "@clerk/nextjs";
 import { createCheckoutSession } from "./actions";
 import { AddressDropdown, type Address } from "@/components/address-dropdown";
 
 const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
 	const router = useRouter();
 	const { id } = configuration;
-	const { user, isLoading } = useKindeBrowserClient();
+	const { user, isLoaded, isSignedIn } = useUser();
 	const { toast } = useToast();
 
 	const [showConfetti, setShowConfetti] = useState<boolean>(false);
 	const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
 
 	useEffect(() => {
-		if (!user && !isLoading) {
+		if (!isLoaded) return;
+		if (!isSignedIn) {
 			localStorage.setItem("configurationId", id);
 			setIsLoginModalOpen(true);
+		} else {
+			setIsLoginModalOpen(false);
 		}
 		setShowConfetti(true);
-	}, [user]);
+	}, [id, isLoaded, isSignedIn]);
 
 	const { color, model, finish, material } = configuration;
 	const tw = COLORS.find((c) => c.value === color)?.tw;
@@ -57,7 +60,7 @@ const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
 			return;
 		}
 
-		if (user) {
+		if (user && isSignedIn) {
 			const { orderId, razorpayOrderId } = await createCheckoutSession({
 				configId: configuration.id,
 				address: shippingAddress,
@@ -97,7 +100,9 @@ const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
 					}
 				},
 				prefill: {
-					email: user.email,
+					email:
+						user.primaryEmailAddress?.emailAddress ??
+						user.emailAddresses?.[0]?.emailAddress,
 				},
 				theme: {
 					color: "#3399cc", // TODO: Customize
@@ -188,7 +193,7 @@ const DesignPreview = ({ configuration }: { configuration: Configuration }) => {
 					</div>
 
 					{/* Shipping Address */}
-					{user && (
+					{user && isSignedIn && (
 						<div className="space-y-6 mt-8">
 							<div className="space-y-2">
 								<label className="text-sm font-medium">

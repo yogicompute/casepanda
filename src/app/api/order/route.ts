@@ -3,7 +3,7 @@ import Razorpay from "razorpay";
 import { BASE_PRICE, PRODUCT_PRICES } from "@/config/Products";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 
 const razorpay = new Razorpay({
 	key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
@@ -27,10 +27,9 @@ export async function POST(request: NextRequest) {
 		throw new Error("No such configuration found");
 	}
 
-	const { getUser } = getKindeServerSession();
-	const user = await getUser();
+	const { userId } = auth();
 
-	if (!user) {
+	if (!userId) {
 		throw new Error("You need to be logged in");
 	}
 
@@ -44,7 +43,7 @@ export async function POST(request: NextRequest) {
 	const order = await db.order.create({
 		data: {
 			amount: price / 100,
-			userId: user.id,
+			userId,
 			configurationId: configuration.id,
 		},
 	});

@@ -1,24 +1,27 @@
 "use server";
 
 import { db } from "@/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 export const getAuthStatus = async () => {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const user = await currentUser();
 
-  if (!user?.id || !user.email) {
+  const email =
+    user?.primaryEmailAddress?.emailAddress ??
+    user?.emailAddresses?.[0]?.emailAddress;
+
+  if (!user?.id || !email) {
     throw new Error("Invalid user data");
   }
 
-  const existingUser = await db.user.findFirst({
+  const existingUser = await db.user.findUnique({
     where: { id: user.id },
   });
   if (!existingUser) {
     await db.user.create({
       data: {
         id: user.id,
-        email: user.email,
+        email,
       },
     });
   }

@@ -2,8 +2,8 @@
 
 import { BASE_PRICE, PRODUCT_PRICES } from "@/config/Products";
 import { db } from "@/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { Order, shippingAddress } from "@prisma/client";
+import { auth } from "@clerk/nextjs/server";
+import { Order } from "@prisma/client";
 import Razorpay from "razorpay";
 import { type Address } from "@/components/address-dropdown";
 
@@ -22,10 +22,9 @@ export const createCheckoutSession = async ({
 		throw new Error("No such configuration found");
 	}
 
-	const { getUser } = getKindeServerSession();
-	const user = await getUser();
+	const { userId } = auth();
 
-	if (!user) {
+	if (!userId) {
 		throw new Error("You need to be logged in");
 	}
 
@@ -41,7 +40,7 @@ export const createCheckoutSession = async ({
 
 	const existingOrder = await db.order.findFirst({
 		where: {
-			userId: user.id,
+			userId,
 			configurationId: configuration.id,
 		},
 	});
@@ -53,7 +52,7 @@ export const createCheckoutSession = async ({
 		order = await db.order.create({
 			data: {
 				amount: price, // store in rupees, since your schema uses Float
-				userId: user.id,
+				userId,
 				configurationId: configuration.id,
 				shippingAddressId: address.id,
 			},
