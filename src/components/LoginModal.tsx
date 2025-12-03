@@ -43,13 +43,13 @@ const LoginModal = ({
 
         <div className="grid grid-cols-2 gap-6 divide-x divide-gray-200">
           <Link
-            href="/api/sign-in"
+            href="/api/auth/sign-in"
             className={buttonVariants({ variant: "outline" })}
           >
             Login
           </Link>
           <Link
-            href="/api/sign-up"
+            href="/api/auth/sign-up"
             className={buttonVariants({ variant: "default" })}
           >
             Sign up
